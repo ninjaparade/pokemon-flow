@@ -6,4 +6,11 @@
 //  Copyright © 2020 Yaz Jallad. All rights reserved.
 //
 
-import Foundation
+import UIKit
+
+class MainVC: BaseVC {
+    
+    private let mainView = MainView(frame: .zero)
+    
+    
+}

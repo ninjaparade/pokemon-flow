@@ -6,4 +6,6 @@
 //  Copyright © 2020 Yaz Jallad. All rights reserved.
 //
 
-import Foundation
+struct PokemonContext: AppContext {
+    
+}

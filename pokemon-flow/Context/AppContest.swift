@@ -6,4 +6,8 @@
 //  Copyright © 2020 Yaz Jallad. All rights reserved.
 //
 
-import Foundation
+// MARK - AppContext
+
+protocol AppContext {
+        
+}
