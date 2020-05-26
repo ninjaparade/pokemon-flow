@@ -1,5 +1,5 @@
 //
-//  MainView.swift
+//  LandingView.swift
 //  pokemon-flow
 //
 //  Created by Yaz Jallad on 2020-05-08.
@@ -8,7 +8,7 @@
 
 import UIKit
 
-class MainView: UIView {
+class LandingView: UIView {
     
     override init(frame: CGRect) {
         super.init(frame: frame)

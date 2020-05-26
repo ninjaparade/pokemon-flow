@@ -8,7 +8,7 @@
 
 import UIKit
 
-class LandingFC: BaseFC {
+class PokemonTypeFC: BaseFC {
     
     override var rootViewController: UIViewController { return navigationController }
 
@@ -19,7 +19,12 @@ class LandingFC: BaseFC {
         return navigationController
     }()
     
+    override init(context: AppContext) {
+        super.init(context: context)
+    }
+    
     override func start() {
-        print("Landing FC Started")
+        let pokemonVC = PokemonVC(context: context, pokemonTypeDS: PokemonTypeDS(context: context))
+        navigationController.setViewControllers([pokemonVC], animated: true)
     }
 }

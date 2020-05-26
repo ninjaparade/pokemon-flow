@@ -9,5 +9,5 @@
 // MARK - AppContext
 
 protocol AppContext {
-        
+
 }

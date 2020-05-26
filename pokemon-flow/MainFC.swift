@@ -33,9 +33,9 @@ class MainFC: BaseFC {
     }
     
     override func start() {
-        let landingFC = LandingFC(context: self.context)
+        let pokemonFC = PokemonTypeFC(context: self.context)
         
-        startWithDelay(coordinator: landingFC)
+        startWithDelay(coordinator: pokemonFC)
     }
     
     
