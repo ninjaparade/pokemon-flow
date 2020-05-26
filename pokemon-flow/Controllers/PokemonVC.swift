@@ -32,6 +32,11 @@ class PokemonVC: BaseTableVC {
         let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath)
         guard let pokemonTypeDS = dataSource as? PokemonTypeDS else { return cell }
         cell.textLabel?.text = "\(pokemonTypeDS.types[indexPath.row].rawValue)"
+            
+        guard let image: UIImage = UIImage(named: pokemonTypeDS.types[indexPath.row].rawValue) else { return cell }
+        
+        cell.imageView?.image = image
+    
         return cell
     }
 }
