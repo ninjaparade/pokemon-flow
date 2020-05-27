@@ -17,6 +17,8 @@ class BaseNavigationController: UINavigationController {
     init(context: AppContext) {
         self.context = context
         super.init(nibName: nil, bundle: nil)
+        
+        
     }
     
     required init?(coder aDecoder: NSCoder) {

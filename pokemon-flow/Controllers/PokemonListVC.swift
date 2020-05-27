@@ -8,7 +8,7 @@
 
 import UIKit
 
-class PokemonVC: BaseTableVC {
+class PokemonListVC: BaseTableVC {
     
     let label = UILabel(frame: .zero)
     
@@ -21,7 +21,7 @@ class PokemonVC: BaseTableVC {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        self.title = "Types"
+        self.title = "Numbers"
     }
     
     required init?(coder: NSCoder) {

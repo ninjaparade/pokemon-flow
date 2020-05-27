@@ -2,7 +2,7 @@
 //  BaseFC.swift
 //  pokemon-flow
 //
-//  Created by Yaz Jallad on 2020-05-08.
+//  Created by Yaz Jallad on 2020-05-27.
 //  Copyright © 2020 Yaz Jallad. All rights reserved.
 //
 
@@ -12,12 +12,16 @@ import UIKit
 
 protocol FlowCoordinator: class {
     var context: AppContext { get set }
+    
     var rootViewController: UIViewController { get }
     
     var childFCs: [FlowCoordinator] { get set }
 
     func start()
 }
+
+
+// MARK: - FlowCoordinator (Helpers)
 
 extension FlowCoordinator {
     func addChildFC(_ childFC: FlowCoordinator) {
@@ -29,10 +33,10 @@ extension FlowCoordinator {
     }
 }
 
-
 // MARK: - BaseFC
 
 typealias BaseFC = BaseFCImplementation & FlowCoordinator
+
 
 // MARK: - BaseFCImplementation: NSObject
 
@@ -55,3 +59,5 @@ class BaseFCImplementation: NSObject {
 
     func start() {}
 }
+
+
