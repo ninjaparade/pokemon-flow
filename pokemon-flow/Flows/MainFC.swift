@@ -25,7 +25,6 @@ class MainFC: BaseFC {
     
     init(window: UIWindow, context: AppContext) {
         super.init(context: context)
-        
         self.window = window
         window.backgroundColor = .white
         window.rootViewController = rootViewController

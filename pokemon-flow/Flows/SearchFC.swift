@@ -12,10 +12,20 @@ class SearchFC: BaseFC {
     
     override var rootViewController: UIViewController { return navigationController }
     
-    lazy var navigationController: BaseTabVC = {
-        let navigationController = BaseTabVC(context: self.context)
+    lazy var navigationController: BaseNavigationController = {
+        let navigationController = BaseNavigationController(context: context)
+        navigationController.view.backgroundColor = .white
+        navigationController.navigationBar.backgroundColor = .white
+        navigationController.isNavigationBarHidden = true
+        navigationController.modalPresentationStyle = .fullScreen
         return navigationController
     }()
+    
+    lazy var tabViewController: BaseTabVC = {
+        let tabViewController = BaseTabVC(context: context)
+        return tabViewController
+    }()
+
     
     override init(context: AppContext) {
         super.init(context: context)
@@ -24,6 +34,7 @@ class SearchFC: BaseFC {
     override func start() {
         let typesVC = PokemonVC(context: context, pokemonTypeDS: PokemonTypeDS(context: context))
         let listVC = PokemonListVC(context: context, pokemonTypeDS: PokemonTypeDS(context: context))
-        navigationController.setChildVC(children: [typesVC, listVC])
+        tabViewController.setViewControllers([typesVC, listVC], animated: true)
+        navigationController.setViewControllers([tabViewController], animated: true)
     }
 }
