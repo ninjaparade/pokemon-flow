@@ -7,5 +7,10 @@
 //
 
 struct PokemonContext: AppContext {
+    let service: PokemonAPI
     
+    
+    init(service: PokemonAPI) {
+        self.service = service
+    }
 }

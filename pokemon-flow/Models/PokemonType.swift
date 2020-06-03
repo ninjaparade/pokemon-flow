@@ -19,3 +19,12 @@ enum PokemonType: String, Codable, CaseIterable {
     case water = "Water"
     case grass = "Grass"
 }
+
+// MARK: Resources
+enum PokemonAPIFormat: String {
+    case json
+}
+
+enum PokemonResources: String {
+    case cards
+}

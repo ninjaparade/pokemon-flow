@@ -16,7 +16,6 @@ class SearchFC: BaseFC {
         let navigationController = BaseNavigationController(context: context)
         navigationController.view.backgroundColor = .white
         navigationController.navigationBar.backgroundColor = .white
-        navigationController.isNavigationBarHidden = true
         navigationController.modalPresentationStyle = .fullScreen
         return navigationController
     }()
@@ -32,9 +31,24 @@ class SearchFC: BaseFC {
     }
     
     override func start() {
-        let typesVC = PokemonVC(context: context, pokemonTypeDS: PokemonTypeDS(context: context))
-        let listVC = PokemonListVC(context: context, pokemonTypeDS: PokemonTypeDS(context: context))
-        tabViewController.setViewControllers([typesVC, listVC], animated: true)
-        navigationController.setViewControllers([tabViewController], animated: true)
+        let typesVC = TypesVC(context: context, typesDS: TypesDS(context: context))
+        typesVC.delegate = self
+                    
+
+        navigationController.setViewControllers([typesVC], animated: true)
+    }
+    
+}
+
+
+extension SearchFC: PokemonTypeDelegate{
+    func didTapType(_ pokemonVC: TypesVC, pokemonType: PokemonType) {
+        
+        
+//        print("\(pokemonType.rawValue.lowercased()) was selected")
+//
+//        let viewController = UIViewController()
+//        viewController.view.backgroundColor = .blue
+//        navigationController.pushViewController(viewController, animated: true)
     }
 }

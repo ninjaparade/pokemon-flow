@@ -12,7 +12,7 @@ class PokemonListVC: BaseTableVC {
     
     let label = UILabel(frame: .zero)
     
-    init(context: AppContext, pokemonTypeDS: PokemonTypeDS) {
+    init(context: AppContext, pokemonTypeDS: TypesDS) {
         super.init(context: context)
         
         dataSource = pokemonTypeDS
@@ -30,10 +30,10 @@ class PokemonListVC: BaseTableVC {
 
     override final func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath)
-        guard let pokemonTypeDS = dataSource as? PokemonTypeDS else { return cell }
-        cell.textLabel?.text = "\(pokemonTypeDS.types[indexPath.row].rawValue)"
+        guard let typesDS = dataSource as? TypesDS else { return cell }
+        cell.textLabel?.text = "\(typesDS.types[indexPath.row].rawValue)"
             
-        guard let image: UIImage = UIImage(named: pokemonTypeDS.types[indexPath.row].rawValue) else { return cell }
+        guard let image: UIImage = UIImage(named: typesDS.types[indexPath.row].rawValue) else { return cell }
         
         cell.imageView?.image = image
     
@@ -41,7 +41,7 @@ class PokemonListVC: BaseTableVC {
     }
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        guard let pokemonTypeDS = dataSource as? PokemonTypeDS else { return }
+        guard let pokemonTypeDS = dataSource as? TypesDS else { return }
         
         // hook up delegate to responde to this click
         print("\(pokemonTypeDS.types[indexPath.row].rawValue.lowercased()) was selected")

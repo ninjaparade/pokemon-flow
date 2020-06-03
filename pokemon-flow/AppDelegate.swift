@@ -11,6 +11,8 @@ import UIKit
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
     
+    let host: String = "ppi.pokemontcg.io/"
+    
     var context: AppContext?
     var window: UIWindow?
     var mainFC: MainFC?
@@ -21,7 +23,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         guard let window = window else { return false }
         
-        context = PokemonContext();
+        let pokemonService = PokemonService(host: host)
+        
+        context = PokemonContext(service: pokemonService);
         
         guard let context = context else { return false }
         
