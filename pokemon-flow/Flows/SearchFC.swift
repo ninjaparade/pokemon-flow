@@ -31,24 +31,50 @@ class SearchFC: BaseFC {
     }
     
     override func start() {
-        let typesVC = TypesVC(context: context, typesDS: TypesDS(context: context))
-        typesVC.delegate = self
-                    
-
-        navigationController.setViewControllers([typesVC], animated: true)
+        
+        context.service.fetchTypes(completion: { (data, error) in
+            if let data = data {
+                do {
+                    let decoder = JSONDecoder()
+                    let typesResponse = try decoder.decode(TypeResonse.self, from: data)
+                    print(data)
+                    print(typesResponse)
+                    DispatchQueue.main.async {
+                        let typesVC = TypesVC(context: self.context, typesDS: TypesDS(context: self.context, types: typesResponse.results))
+                        typesVC.delegate = self
+                        self.navigationController.setViewControllers([typesVC], animated: true)
+                    }
+                } catch let decodingError {
+                    print(decodingError)
+                }
+            }
+        })
     }
     
 }
 
 
 extension SearchFC: PokemonTypeDelegate{
-    func didTapType(_ pokemonVC: TypesVC, pokemonType: PokemonType) {
-        
-        
-//        print("\(pokemonType.rawValue.lowercased()) was selected")
-//
-//        let viewController = UIViewController()
-//        viewController.view.backgroundColor = .blue
-//        navigationController.pushViewController(viewController, animated: true)
+    func didTapType(_ pokemonVC: TypesVC, pokemonType: Type) {
+    
+        let strArray = pokemonType.url.components(separatedBy: "/")
+    
+        let type = strArray[6]
+        context.service.fetchByType(type: type, completion: { ( data, error ) in
+            if let data = data {
+                do {
+                  let decoder = JSONDecoder()
+                  let typesResponse = try decoder.decode(TypesResonse.self, from: data)
+                  DispatchQueue.main.async {
+                    let pokemonTypeVC = PokemonVC(context: self.context, pokemonTypesDS: PokemonTypesDS(context: self.context, pokemon: typesResponse.pokemon, type: typesResponse.name))
+//                      typesVC.delegate = self
+                    self.navigationController.pushViewController(pokemonTypeVC, animated: true)
+                  }
+              } catch let decodingError {
+                  print(decodingError)
+              }
+                
+            }
+        })
     }
 }

@@ -17,6 +17,8 @@ enum BaseDSState {
 
 class BaseTableDS: NSObject, UITableViewDataSource {
     
+    
+    
     // MARK: Properties
 
     let context: AppContext
@@ -42,11 +44,12 @@ class BaseTableDS: NSObject, UITableViewDataSource {
             return dataSourceTableView(tableView, numberOfRowsInSection: section)
         }
     }
-
-    final func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        return UITableViewCell()
-    }
     
+    final func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        // unused
+        UITableViewCell()
+    }
+            
     // MARK: Reload Data
 
     func reload(completion: @escaping (Bool) -> Void, error: @escaping (String) -> Void) {

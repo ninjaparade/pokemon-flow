@@ -11,8 +11,8 @@ import UIKit
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
     
-    let host: String = "ppi.pokemontcg.io/"
-    
+    let host: String = "pokeapi.co"
+
     var context: AppContext?
     var window: UIWindow?
     var mainFC: MainFC?

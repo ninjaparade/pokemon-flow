@@ -9,10 +9,12 @@
 import UIKit
 
 class PokemonTypesDS: BaseTableDS {
-    var pokemon: [Card]
+    var pokemon: [Pokemon]
+    var type: String
     
-    init(context: AppContext, pokemon: [Card]) {
+    init(context: AppContext, pokemon: [Pokemon], type: String) {
         self.pokemon = pokemon
+        self.type = type
         super.init(context: context)
     }
     
@@ -22,6 +24,7 @@ class PokemonTypesDS: BaseTableDS {
     }
     
     override func dataSourceTableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-          return pokemon.count
+    
+        return pokemon.count
       }
 }

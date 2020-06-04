@@ -9,8 +9,13 @@
 import UIKit
 
 class TypesDS: BaseTableDS {
-    let types: [PokemonType] = PokemonType.allCases
-       
+    var types: [Type]
+    
+    init(context: AppContext, types: [Type] ) {
+        self.types = types
+        super.init(context: context)
+    }
+    
    // Mark: BaseTableDS
    
    override func reload(completion: @escaping (Bool) -> Void, error: @escaping (String) -> Void) {

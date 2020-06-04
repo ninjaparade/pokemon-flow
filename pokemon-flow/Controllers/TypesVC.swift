@@ -12,20 +12,15 @@ import UIKit
  // Mark: Delegate
 
 protocol PokemonTypeDelegate: class {
-    func didTapType(_ pokemonVC: TypesVC, pokemonType: PokemonType)
+    func didTapType(_ typeVC: TypesVC, pokemonType: Type)
 }
 
-///
 class TypesVC: BaseTableVC {
-    
-    let label = UILabel(frame: .zero)
     
     weak var delegate: PokemonTypeDelegate?
     
     init(context: AppContext, typesDS: TypesDS) {
-        super.init(context: context)
-        
-        dataSource = typesDS
+        super.init(context: context, dataSource: typesDS)
     }
     
     override func viewDidLoad() {
@@ -37,13 +32,14 @@ class TypesVC: BaseTableVC {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-
-    override final func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        
+    override func cell(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath)
         guard let typesDS = dataSource as? TypesDS else { return cell }
-        cell.textLabel?.text = "\(typesDS.types[indexPath.row].rawValue)"
+        let name: String = typesDS.types[indexPath.row].name.capitalized
+        cell.textLabel?.text = "\(name)"
             
-        guard let image: UIImage = UIImage(named: typesDS.types[indexPath.row].rawValue) else { return cell }
+        guard let image: UIImage = UIImage(named: typesDS.types[indexPath.row].name) else { return cell }
         
         cell.imageView?.image = image
     

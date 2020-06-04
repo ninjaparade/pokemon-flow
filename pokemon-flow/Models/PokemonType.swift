@@ -26,5 +26,5 @@ enum PokemonAPIFormat: String {
 }
 
 enum PokemonResources: String {
-    case cards
+    case cards, type
 }
