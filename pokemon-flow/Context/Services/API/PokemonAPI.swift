@@ -15,13 +15,11 @@ import UIKit
 protocol PokemonAPI {
     var host: String { get set }
     
-    func fetchTypes(completion: @escaping(Data?, Error?) -> Void)
+    func fetchTypes(completion: @escaping (Response<Types>) -> Void)
     
-    func fetchByType(type:String, completion: @escaping (Data?, Error?) -> Void)
+    func fetchByType(type: String, completion: @escaping (Response<PokemonTypeResonse>) -> Void)
     
     func searchData(with resources: PokemonResources, type: String, completion: @escaping(Data?, Error?) -> Void)
-    
-    func fetch(with resources: PokemonResources, parameters: [String: String], completion: @escaping(Data?, Error?) -> Void)
 }
 
 extension URLComponents {

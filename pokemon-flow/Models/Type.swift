@@ -9,7 +9,7 @@
 import Foundation
 
 // MARK: - TypeResonse
-struct TypeResonse: Codable {
+struct Types: Codable {
     let results: [Type]
 }
 
@@ -20,7 +20,7 @@ struct Type: Codable {
 }
 
 // MARK: - TypesResonse
-struct TypesResonse: Codable {
+struct PokemonTypeResonse: Codable {
     let id: Int
     let name: String
     let pokemon: [Pokemon]
