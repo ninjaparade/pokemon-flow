@@ -13,7 +13,6 @@ import Disk
 
 enum Response<T: Decodable> {
     case success(T)
-    case cached(T)
     case fail(Error)
 }
 
@@ -39,27 +38,40 @@ class PokemonService: PokemonAPI {
         guard let url = request.url else { return }
         
         let cached = try? Disk.retrieve(url.absoluteString, from: .caches, as: Types.self) as Types
-        
+        print(Thread.current)
+
         if let cached = cached {
-            print("returning tpes from cache")
-            completion(.cached(cached))
+            completion(.success(cached))
             return
         }
-           
+        
         URLSession.shared.dataTask(with: url) { (data, _, error) in
             if let data = data {
                 do {
                     let decoder = JSONDecoder()
                     let response = try decoder.decode(Types.self, from: data)
-                    try? Disk.save(response, to: .caches, as: url.absoluteString)
-                    completion(.success(response))
+                    do {
+                        try Disk.save(response, to: .caches, as: url.absoluteString)
+                    } catch let error as NSError {
+                        fatalError("""
+                          Domain: \(error.domain)
+                          Code: \(error.code)
+                          Description: \(error.localizedDescription)
+                          Failure Reason: \(error.localizedFailureReason ?? "")
+                          Suggestions: \(error.localizedRecoverySuggestion ?? "")
+                          """)
+                    }
+                    DispatchQueue.main.sync {
+                        completion(.success(response))
+                    }
                 } catch let error {
-                    completion(.fail(error))
+                    DispatchQueue.main.sync {
+                        completion(.fail(error))
+                    }
                 }
             }
         }.resume()
     }
-    
     
     func fetchByType(type: String, completion: @escaping (Response<PokemonTypeResonse>) -> Void) {
         var request = self.urlComponents
@@ -67,22 +79,37 @@ class PokemonService: PokemonAPI {
         request.path = "/api/v2/type/\(type)"
         guard let url = request.url else { return }
         
-        let cached = try? Disk.retrieve(url.absoluteString, from: .caches, as: PokemonTypeResonse.self) as PokemonTypeResonse
+        let cached = try? Disk.retrieve(request.path, from: .caches, as: PokemonTypeResonse.self) as PokemonTypeResonse
         if let cached = cached {
-            print("returning tpes from cache")
-            completion(.cached(cached))
+            completion(.success(cached))
             return
         }
+        
+        
         URLSession.shared.dataTask(with: url) { (data, _, error) in
             if let data = data {
                 do {
                     let decoder = JSONDecoder()
                     let response = try decoder.decode(PokemonTypeResonse.self, from: data)
+                    do{
+                        try Disk.save(response, to: .caches, as: request.path)
+                    }  catch let error as NSError {
+                        fatalError("""
+                            Domain: \(error.domain)
+                            Code: \(error.code)
+                            Description: \(error.localizedDescription)
+                            Failure Reason: \(error.localizedFailureReason ?? "")
+                            Suggestions: \(error.localizedRecoverySuggestion ?? "")
+                            """)
+                    }
                     
-                    try? Disk.save(response, to: .caches, as: url.absoluteString)
-                    completion(.success(response))
+                    DispatchQueue.main.sync {
+                        completion(.success(response))
+                    }
                 } catch let error {
-                    completion(.fail(error))
+                    DispatchQueue.main.sync {
+                        completion(.fail(error))
+                    }
                 }
             }
        }.resume()

@@ -48,7 +48,6 @@ class TypesVC: BaseTableVC {
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         guard let pokemonTypeDS = dataSource as? TypesDS else { return }
-
         delegate?.didTapType(self, pokemonType: pokemonTypeDS.types[indexPath.row])
     }
 }
