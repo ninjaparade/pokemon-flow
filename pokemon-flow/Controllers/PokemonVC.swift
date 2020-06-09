@@ -8,14 +8,14 @@
 
 import UIKit
 
-protocol PokemonListDelete: class {
-    func didTapPokemon(_ pokemonVC: PokemonVC, card: Card)
+protocol PokemonDelegate: class {
+    func didTapPokemon(_ pokemonVC: PokemonVC, pokemon: Pokemon)
 }
 
 class PokemonVC: BaseTableVC {
     
     var type: String
-    weak var delegate: PokemonListDelete?
+    weak var delegate: PokemonDelegate?
     
     init(context: AppContext, pokemonTypesDS: PokemonTypesDS) {
         type = pokemonTypesDS.type
@@ -38,12 +38,12 @@ class PokemonVC: BaseTableVC {
         let name = pokemonTypesDS.pokemon[indexPath.row].pokemon.name.capitalized
         cell.textLabel?.text = "\(name)"
         
-//        if let url = URL(string: pokemonTypesDS.pokemon[indexPath.row].imageURL) ,
-//            let data = try? Data(contentsOf: url),
-//            let image = UIImage(data: data) {
-//            cell.imageView?.image = image
-//        }
-
         return cell
+    }
+    
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        guard let dataSource = dataSource as? PokemonTypesDS else { return }
+        print(dataSource.pokemon[indexPath.row])
+        self.delegate?.didTapPokemon(self, pokemon: dataSource.pokemon[indexPath.row] )
     }
 }

@@ -43,8 +43,9 @@ class BaseTableVC: UITableViewController {
     
     override final func numberOfSections(in tableView: UITableView) -> Int {
         return dataSource.numberOfSections(in: tableView)
-    }
 
+    }
+    
     override final func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return dataSource.tableView(tableView, numberOfRowsInSection: section)
     }

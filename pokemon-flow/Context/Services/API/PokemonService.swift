@@ -37,10 +37,7 @@ class PokemonService: PokemonAPI {
         request.path = "/api/v2/type"
         guard let url = request.url else { return }
         
-        let cached = try? Disk.retrieve(url.absoluteString, from: .caches, as: Types.self) as Types
-        print(Thread.current)
-
-        if let cached = cached {
+        if let cached = try? Disk.retrieve(url.absoluteString, from: .caches, as: Types.self) as Types {
             completion(.success(cached))
             return
         }
@@ -48,8 +45,7 @@ class PokemonService: PokemonAPI {
         URLSession.shared.dataTask(with: url) { (data, _, error) in
             if let data = data {
                 do {
-                    let decoder = JSONDecoder()
-                    let response = try decoder.decode(Types.self, from: data)
+                    let response = try JSONDecoder().decode(Types.self, from: data)
                     do {
                         try Disk.save(response, to: .caches, as: url.absoluteString)
                     } catch let error as NSError {
@@ -79,8 +75,7 @@ class PokemonService: PokemonAPI {
         request.path = "/api/v2/type/\(type)"
         guard let url = request.url else { return }
         
-        let cached = try? Disk.retrieve(request.path, from: .caches, as: PokemonTypeResonse.self) as PokemonTypeResonse
-        if let cached = cached {
+        if let cached = try? Disk.retrieve(request.path, from: .caches, as: PokemonTypeResonse.self) as PokemonTypeResonse {
             completion(.success(cached))
             return
         }
@@ -89,8 +84,8 @@ class PokemonService: PokemonAPI {
         URLSession.shared.dataTask(with: url) { (data, _, error) in
             if let data = data {
                 do {
-                    let decoder = JSONDecoder()
-                    let response = try decoder.decode(PokemonTypeResonse.self, from: data)
+                    
+                    let response = try JSONDecoder().decode(PokemonTypeResonse.self, from: data)
                     do{
                         try Disk.save(response, to: .caches, as: request.path)
                     }  catch let error as NSError {
@@ -102,7 +97,6 @@ class PokemonService: PokemonAPI {
                             Suggestions: \(error.localizedRecoverySuggestion ?? "")
                             """)
                     }
-                    
                     DispatchQueue.main.sync {
                         completion(.success(response))
                     }
@@ -116,8 +110,49 @@ class PokemonService: PokemonAPI {
         
     }
     
-    func searchData(with resources: PokemonResources, type: String, completion: @escaping (Data?, Error?) -> Void) {
+    func fetchData(with resources: PokemonResources, type: String, completion: @escaping (Data?, Error?) -> Void) {
     }
     
+    
+    func fetchBySpecies(species: String, completion: @escaping (Response<PokemonSpecies>) -> Void) {
+        var request = self.urlComponents
+               
+        request.path = "/api/v2/pokemon/\(species)"
+        guard let url = request.url else { return }
+       
+        if let cached = try? Disk.retrieve(request.path, from: .caches, as: PokemonSpecies.self) as PokemonSpecies {
+            print("returning from cache")
+            completion(.success(cached))
+            return
+        }
+            
+        URLSession.shared.dataTask(with: url) { (data, _, error) in
+            if let data = data {
+                do {
+                   let response = try JSONDecoder().decode(PokemonSpecies.self, from: data)
+                    
+                   do{
+                       try Disk.save(response, to: .caches, as: request.path)
+                   }  catch let error as NSError {
+                       fatalError("""
+                           Domain: \(error.domain)
+                           Code: \(error.code)
+                           Description: \(error.localizedDescription)
+                           Failure Reason: \(error.localizedFailureReason ?? "")
+                           Suggestions: \(error.localizedRecoverySuggestion ?? "")
+                           """)
+                   }
+                   DispatchQueue.main.sync {
+                       completion(.success(response))
+                   }
+                } catch let error {
+                    print(error)
+                    DispatchQueue.main.sync {
+                       completion(.fail(error))
+                   }
+               }
+           }
+        }.resume()
+    }
  
 }
