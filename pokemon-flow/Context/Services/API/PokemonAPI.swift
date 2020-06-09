@@ -20,6 +20,8 @@ protocol PokemonAPI {
     func fetchByType(type: String, completion: @escaping (Response<PokemonTypeResonse>) -> Void)
     
     func fetchBySpecies(species: String, completion: @escaping (Response<PokemonSpecies>) -> Void)
+    
+    func fetchData<T: Codable>(url path: String, cacheKey key: String, parseType: T.Type, completion: @escaping (Response<T>) -> Void)
 }
 
 extension URLComponents {

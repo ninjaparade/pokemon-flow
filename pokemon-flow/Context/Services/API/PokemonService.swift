@@ -17,7 +17,6 @@ enum Response<T: Decodable> {
 }
 
 class PokemonService: PokemonAPI {
-
     var host: String
     
     var urlComponents: URLComponents {
@@ -32,62 +31,53 @@ class PokemonService: PokemonAPI {
     }
     
     func fetchTypes(completion: @escaping (Response<Types>) -> Void) {
-        var request = self.urlComponents
-        
-        request.path = "/api/v2/type"
-        guard let url = request.url else { return }
-        
-        if let cached = try? Disk.retrieve(url.absoluteString, from: .caches, as: Types.self) as Types {
-            completion(.success(cached))
-            return
-        }
-        
-        URLSession.shared.dataTask(with: url) { (data, _, error) in
-            if let data = data {
-                do {
-                    let response = try JSONDecoder().decode(Types.self, from: data)
-                    do {
-                        try Disk.save(response, to: .caches, as: url.absoluteString)
-                    } catch let error as NSError {
-                        fatalError("""
-                          Domain: \(error.domain)
-                          Code: \(error.code)
-                          Description: \(error.localizedDescription)
-                          Failure Reason: \(error.localizedFailureReason ?? "")
-                          Suggestions: \(error.localizedRecoverySuggestion ?? "")
-                          """)
-                    }
-                    DispatchQueue.main.sync {
-                        completion(.success(response))
-                    }
-                } catch let error {
-                    DispatchQueue.main.sync {
-                        completion(.fail(error))
-                    }
-                }
-            }
-        }.resume()
+        fetchData(
+            url: "/api/v2/type",
+            cacheKey: "types",
+            parseType: Types.self,
+            completion: completion
+        )
     }
     
     func fetchByType(type: String, completion: @escaping (Response<PokemonTypeResonse>) -> Void) {
+        fetchData(
+            url: "/api/v2/type/\(type)",
+            cacheKey: "types-\(type)",
+            parseType: PokemonTypeResonse.self,
+            completion: completion
+        )
+    }
+
+    
+    func fetchBySpecies(species: String, completion: @escaping (Response<PokemonSpecies>) -> Void) {
+        fetchData(
+            url: "/api/v2/pokemon/\(species)",
+            cacheKey: "species-\(species)",
+            parseType: PokemonSpecies.self,
+            completion: completion
+        )
+    }
+    
+    
+    func fetchData<T>(url path: String, cacheKey key: String,  parseType: T.Type, completion: @escaping (Response<T>) -> Void) where T : Codable {
         var request = self.urlComponents
+        request.path = path
         
-        request.path = "/api/v2/type/\(type)"
         guard let url = request.url else { return }
         
-        if let cached = try? Disk.retrieve(request.path, from: .caches, as: PokemonTypeResonse.self) as PokemonTypeResonse {
+        if let cached = try? Disk.retrieve(key, from: .caches, as: T.self) {
+            print("returning from cache")
             completion(.success(cached))
             return
         }
         
-        
         URLSession.shared.dataTask(with: url) { (data, _, error) in
             if let data = data {
                 do {
+                    let response = try JSONDecoder().decode(T.self, from: data)
                     
-                    let response = try JSONDecoder().decode(PokemonTypeResonse.self, from: data)
                     do{
-                        try Disk.save(response, to: .caches, as: request.path)
+                        try Disk.save(response, to: .caches, as: key)
                     }  catch let error as NSError {
                         fatalError("""
                             Domain: \(error.domain)
@@ -106,53 +96,6 @@ class PokemonService: PokemonAPI {
                     }
                 }
             }
-       }.resume()
-        
-    }
-    
-    func fetchData(with resources: PokemonResources, type: String, completion: @escaping (Data?, Error?) -> Void) {
-    }
-    
-    
-    func fetchBySpecies(species: String, completion: @escaping (Response<PokemonSpecies>) -> Void) {
-        var request = self.urlComponents
-               
-        request.path = "/api/v2/pokemon/\(species)"
-        guard let url = request.url else { return }
-       
-        if let cached = try? Disk.retrieve(request.path, from: .caches, as: PokemonSpecies.self) as PokemonSpecies {
-            print("returning from cache")
-            completion(.success(cached))
-            return
-        }
-            
-        URLSession.shared.dataTask(with: url) { (data, _, error) in
-            if let data = data {
-                do {
-                   let response = try JSONDecoder().decode(PokemonSpecies.self, from: data)
-                    
-                   do{
-                       try Disk.save(response, to: .caches, as: request.path)
-                   }  catch let error as NSError {
-                       fatalError("""
-                           Domain: \(error.domain)
-                           Code: \(error.code)
-                           Description: \(error.localizedDescription)
-                           Failure Reason: \(error.localizedFailureReason ?? "")
-                           Suggestions: \(error.localizedRecoverySuggestion ?? "")
-                           """)
-                   }
-                   DispatchQueue.main.sync {
-                       completion(.success(response))
-                   }
-                } catch let error {
-                    print(error)
-                    DispatchQueue.main.sync {
-                       completion(.fail(error))
-                   }
-               }
-           }
         }.resume()
     }
- 
 }
